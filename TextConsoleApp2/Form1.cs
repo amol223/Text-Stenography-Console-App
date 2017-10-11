@@ -27,28 +27,43 @@ namespace TextConsole
             textBox5.Text = "";
             l.Text = "";
             string input = textBox1.Text;
-            string encryptedString = encdec.EncryptInput(input);
-            textBox3.Text = encryptedString;
-            int numberofchars = encryptedString.Length;
-            int numberofwords = 1 + (8 * numberofchars);
-            textBox5.Text = "Enter " + numberofwords.ToString() + " words here";
-            l.Text = numberofwords.ToString();
-            l.Hide();
+            if (input != string.Empty)
+            {
+                string encryptedString = encdec.EncryptInput(input);
+                textBox3.Text = encryptedString;
+                int numberofchars = encryptedString.Length;
+                int numberofwords = 1 + (8 * numberofchars);
+                textBox5.Text = "Enter " + numberofwords.ToString() + " words here";
+                l.Text = numberofwords.ToString();
+                l.Hide();
+            }
+            else
+            {
+                textBox3.Text = "Error: Please enter an input";
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
             textBox4.Text = "";
             string input = textBox2.Text;
-            string stringToDecodeFromSentence = encdec.decodstenograph(input);
-            string output = encdec.DecryptInput(stringToDecodeFromSentence);
-            textBox4.Text = output;
+            if (input != string.Empty)
+            {
+                string stringToDecodeFromSentence = encdec.decodstenograph(input, l.Text);
+                string output = encdec.DecryptInput(stringToDecodeFromSentence);
+                textBox4.Text = output;
+            }
+            else
+            {
+                textBox4.Text = "Error: Please enter stenograph text input";
+            }
         }        
 
         private void button3_Click(object sender, EventArgs e)
         {
             textBox6.Text = "";
             string covertext = textBox5.Text;
+            if (covertext != string.Empty) { 
             string output = string.Empty;
             //List<string> output = new List<string>();
             string[] arr = covertext.Split(' ');
@@ -57,34 +72,47 @@ namespace TextConsole
             StringBuilder chararray = new StringBuilder(hidetext);
             int j = 0;
             int h = 0;
-            if (numberofwords == arr.Length)
+            if (numberofwords <= arr.Length)
             {
                 //output = output + arr[j];
                 //j++;
                 for (int i = 0; i < chararray.Length; i++)
                 {
-                    string binary = Convert.ToString(chararray[i], 2).PadLeft(8,'0');
+                    string binary = Convert.ToString(chararray[i], 2).PadLeft(8, '0');
                     StringBuilder bin = new StringBuilder(binary);
                     for (int k = 0; k < bin.Length; k++)
                     {
                         if (bin[k] == '1')
                         {
-                            //output.Add(arr[j]);
-                            //output.Add(" ");
                             output = output + arr[j] + " ";
                         }
                         else
-                        {
-                            //output.Add(arr[j]);
-                            //output.Add("  ");
+                        {                           
                             output = output + arr[j] + "  ";
-                        }                        
+                        }
                         j++;
                     }
                 }
-                output = output + arr[arr.Length - 1];
+                if (numberofwords == arr.Length)
+                    output = output + arr[arr.Length - 1];
+                else
+                {
+                    while (j < arr.Length)
+                    {
+                        output = output + arr[j] + " ";
+                        j++;
+                    }
+                }                    
             }
-            textBox6.Text = output;            
+            else
+                output = ((numberofwords - arr.Length) > 1 ? "Error: Please enter " + (numberofwords - arr.Length) + " more words." :
+                    "Error: Please enter " + (numberofwords - arr.Length) + " more word.");
+            textBox6.Text = output;
+            }
+            else
+            {
+                textBox6.Text = "Error: Please enter cover text input";
+            }
         }
 
         private void label7_Click(object sender, EventArgs e)

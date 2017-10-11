@@ -163,7 +163,7 @@
             // 
             // textBox6
             // 
-            this.textBox6.Location = new System.Drawing.Point(564, 65);
+            this.textBox6.Location = new System.Drawing.Point(567, 65);
             this.textBox6.Multiline = true;
             this.textBox6.Name = "textBox6";
             this.textBox6.ReadOnly = true;

@@ -302,10 +302,11 @@ namespace EncryptDecrypt
             return toDecrypt;
         }
 
-        public string decodstenograph(string input)
+        public string decodstenograph(string input, string wordcount)
         {
             //string inp = "this  is test of  spaces  pl  pl  pl plthis  is test of  spaces  pl  pl  pl plthis  is test of  spaces  pl  pl  pl plthis  is test of  spaces  pl  pl  pl pl";
             string inp = input;
+            int numberofwords = Convert.ToInt32(wordcount);
             StringBuilder arr = new StringBuilder(inp);
             string binarycount = string.Empty;
             string decodestring = string.Empty;
@@ -319,7 +320,8 @@ namespace EncryptDecrypt
                         binarycount = binarycount + "1";
                 }
                 if(binarycount.Length == 8){
-                    decodestring = decodestring + Convert.ToChar(Convert.ToInt16(binarycount, 2));
+                    if(decodestring.Length < ((numberofwords - 1)/8))
+                        decodestring = decodestring + Convert.ToChar(Convert.ToInt16(binarycount, 2));
                     binarycount = string.Empty;
                 }
             }
