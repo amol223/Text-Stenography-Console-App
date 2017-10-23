@@ -128,11 +128,7 @@ namespace TextConsole
             textBox4.Text = string.Empty;
             textBox5.Text = string.Empty;
             textBox6.Text = string.Empty;
-        }      
-
-        
-
-        
+        }    
     }
 }
 //The  advantage of  steganography  over  cryptography alone  is that  the intended secret  message does  not  attract attention  to itself as  an  object of scrutiny. Plainly  visible encrypted messages, no  matter  how unbreakable  they  are, arouse interest  and may  in  themselves  be incriminating in countries in which encryption is illegal. 
