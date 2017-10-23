@@ -127,7 +127,7 @@ namespace TextConsole
             textBox3.Text = string.Empty;
             textBox4.Text = string.Empty;
             textBox5.Text = string.Empty;
-            textBox6.Text = string.Empty;
+            
         }    
     }
 }
