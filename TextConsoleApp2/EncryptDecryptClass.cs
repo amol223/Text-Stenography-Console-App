@@ -5,6 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Configuration;
+using System.Data;
+using System.Data.OleDb;
+using System.IO;
 
 namespace EncryptDecrypt
 {
@@ -13,7 +16,7 @@ namespace EncryptDecrypt
         
         public EncryptDecryptClass()
         {
-            
+            //readExcel();
         }
 
         public string EncryptInput(string input)
@@ -345,5 +348,23 @@ namespace EncryptDecrypt
 
             return toDecrypt;
         }
+
+        public Dictionary<string, string> readExcel()
+        {
+            var fileName = string.Format("{0}\\words.xls", Directory.GetCurrentDirectory());
+            var connectionString = string.Format("Provider=Microsoft.Jet.OLEDB.4.0; data source={0}; Extended Properties=Excel 8.0;", fileName);
+
+            var adapter = new OleDbDataAdapter("SELECT * FROM [Sheet1$]", connectionString);
+            var ds = new DataSet();
+
+            adapter.Fill(ds, "wordList");
+
+            DataTable datao = ds.Tables[0];
+            Dictionary<string, string> list = new Dictionary<string, string>();
+            list = datao.AsEnumerable().ToDictionary<DataRow, string, string>(row => row.Field<string>(0), row => row.Field<string>(1));
+           
+            return list;
+        }
+
     }
 }

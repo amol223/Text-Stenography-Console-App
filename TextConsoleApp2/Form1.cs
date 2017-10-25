@@ -16,11 +16,19 @@ namespace TextConsole
         public Form1()
         {
             InitializeComponent();
+            list = encdec.readExcel();
+            foreach (var entry in list)
+            {
+                reverselist.Add(entry.Value, entry.Key);
+            }            
         }
 
+        Dictionary<string, string> list = new Dictionary<string, string>();
+        Dictionary<string, string> reverselist = new Dictionary<string, string>();
+        Dictionary<string, string> combinedlist = new Dictionary<string, string>();
         EncryptDecryptClass encdec = new EncryptDecryptClass();
         Label l = new Label();
-        
+
         private void button1_Click(object sender, EventArgs e)
         {
             textBox3.Text = "";
@@ -30,12 +38,15 @@ namespace TextConsole
             if (input != string.Empty)
             {
                 string encryptedString = encdec.EncryptInput(input);
+                StringBuilder str = new StringBuilder(encryptedString);
                 textBox3.Text = encryptedString;
-                int numberofchars = encryptedString.Length;
-                int numberofwords = 1 + (8 * numberofchars);
-                textBox5.Text = "Enter " + numberofwords.ToString() + " words here";
-                l.Text = numberofwords.ToString();
-                l.Hide();
+                string inp = "Enter a sentence with following words appearing in the given ordered sequence: ";
+                for (int i = 0; i < encryptedString.Length; i++)
+                {
+                    inp = inp + list[str[i].ToString()] + ", ";
+                }
+                inp = inp.Substring(0, inp.Length - 2);
+                textBox5.Text = inp;
             }
             else
             {
@@ -43,91 +54,50 @@ namespace TextConsole
             }
         }
 
+        //private void button2_Click(object sender, EventArgs e)
+        //{
+        //    textBox4.Text = "";
+        //    string input = textBox2.Text;
+        //    if (input != string.Empty)
+        //    {
+        //        string stringToDecodeFromSentence = encdec.decodstenograph(input, l.Text);
+        //        string output = encdec.DecryptInput(stringToDecodeFromSentence);
+        //        textBox4.Text = output;
+        //    }
+        //    else
+        //    {
+        //        textBox4.Text = "Error: Please enter stenograph text input";
+        //    }
+        //}        
+
         private void button2_Click(object sender, EventArgs e)
-        {
-            textBox4.Text = "";
+        {            
             string input = textBox2.Text;
             if (input != string.Empty)
-            {
-                string stringToDecodeFromSentence = encdec.decodstenograph(input, l.Text);
-                string output = encdec.DecryptInput(stringToDecodeFromSentence);
-                textBox4.Text = output;
+            { 
+                string output = string.Empty;
+                string[] arr = input.Split(' ');             
+                for (int i = 0; i < arr.Length; i++)
+                {
+                    if (reverselist.ContainsKey(arr[i]))
+                        output = output + reverselist[arr[i]];                       
+                }
+                string decryptText = encdec.DecryptInput(output);
+                textBox4.Text = decryptText;
             }
             else
             {
-                textBox4.Text = "Error: Please enter stenograph text input";
+                textBox4.Text = "Error: Please enter cover text input";
             }
         }        
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-            textBox6.Text = "";
-            string covertext = textBox5.Text;
-            if (covertext != string.Empty) { 
-            string output = string.Empty;
-            //List<string> output = new List<string>();
-            string[] arr = covertext.Split(' ');
-            int numberofwords = Convert.ToInt32(l.Text);
-            string hidetext = textBox3.Text;
-            StringBuilder chararray = new StringBuilder(hidetext);
-            int j = 0;
-            int h = 0;
-            if (numberofwords <= arr.Length)
-            {
-                //output = output + arr[j];
-                //j++;
-                for (int i = 0; i < chararray.Length; i++)
-                {
-                    string binary = Convert.ToString(chararray[i], 2).PadLeft(8, '0');
-                    StringBuilder bin = new StringBuilder(binary);
-                    for (int k = 0; k < bin.Length; k++)
-                    {
-                        if (bin[k] == '1')
-                        {
-                            output = output + arr[j] + " ";
-                        }
-                        else
-                        {                           
-                            output = output + arr[j] + "  ";
-                        }
-                        j++;
-                    }
-                }
-                if (numberofwords == arr.Length)
-                    output = output + arr[arr.Length - 1];
-                else
-                {
-                    while (j < arr.Length)
-                    {
-                        output = output + arr[j] + " ";
-                        j++;
-                    }
-                }                    
-            }
-            else
-                output = ((numberofwords - arr.Length) > 1 ? "Error: Please enter " + (numberofwords - arr.Length) + " more words." :
-                    "Error: Please enter " + (numberofwords - arr.Length) + " more word.");
-            textBox6.Text = output;
-            }
-            else
-            {
-                textBox6.Text = "Error: Please enter cover text input";
-            }
-        }
-
-        private void label7_Click(object sender, EventArgs e)
-        {
-
-        }
 
         private void button4_Click(object sender, EventArgs e)
         {
             textBox1.Text = string.Empty;
             textBox2.Text = string.Empty;
             textBox3.Text = string.Empty;
-            textBox4.Text = string.Empty;
+            textBox4.Text = string.Empty;            
             textBox5.Text = string.Empty;
-            
         }    
     }
 }
