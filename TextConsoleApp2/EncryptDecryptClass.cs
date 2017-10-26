@@ -351,17 +351,29 @@ namespace EncryptDecrypt
 
         public Dictionary<string, string> readExcel()
         {
-            var fileName = string.Format("{0}\\words.xls", Directory.GetCurrentDirectory());
-            var connectionString = string.Format("Provider=Microsoft.Jet.OLEDB.4.0; data source={0}; Extended Properties=Excel 8.0;", fileName);
-
-            var adapter = new OleDbDataAdapter("SELECT * FROM [Sheet1$]", connectionString);
-            var ds = new DataSet();
-
-            adapter.Fill(ds, "wordList");
-
-            DataTable datao = ds.Tables[0];
+            var textfileName = string.Format("{0}\\Words.txt", Directory.GetCurrentDirectory());
+            StreamReader w = new StreamReader(textfileName);
             Dictionary<string, string> list = new Dictionary<string, string>();
-            list = datao.AsEnumerable().ToDictionary<DataRow, string, string>(row => row.Field<string>(0), row => row.Field<string>(1));
+            string line;
+            string[] roww;
+            string x, y;
+            //w.ReadLine();
+            while((line = w.ReadLine()) != null){
+                roww = line.Split('=');
+                x = roww[0].TrimStart();
+                y = roww[1].TrimStart();
+                list.Add(x.TrimEnd(), y.TrimEnd());
+            }
+
+            ////var fileName = string.Format("{0}\\words.xls", Directory.GetCurrentDirectory());
+            ////var connectionString = string.Format(
+            ////    "Provider=Microsoft.ACE.OLEDB.12.0; data source={0}; Extended Properties=Excel 12.0;", fileName);
+            ////var adapter = new OleDbDataAdapter("SELECT * FROM [Sheet1$]", connectionString);
+            ////var ds = new DataSet();
+            ////adapter.Fill(ds, "wordList");
+            ////DataTable datao = ds.Tables[0];
+            //Dictionary<string, string> list = new Dictionary<string, string>();
+            //list = datao.AsEnumerable().ToDictionary<DataRow, string, string>(row => row.Field<string>(0), row => row.Field<string>(1));
            
             return list;
         }
