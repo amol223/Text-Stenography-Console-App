@@ -8,6 +8,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using EncryptDecrypt;
+using System.Configuration;
+using System.Data;
+using System.Data.OleDb;
+using System.IO;
 
 namespace TextConsole
 {
@@ -28,7 +32,7 @@ namespace TextConsole
         Dictionary<string, string> combinedlist = new Dictionary<string, string>();
         EncryptDecryptClass encdec = new EncryptDecryptClass();
         Label l = new Label();
-
+        List<string> chars = new List<string>();
         private void button1_Click(object sender, EventArgs e)
         {
             textBox3.Text = "";
@@ -41,9 +45,17 @@ namespace TextConsole
                 StringBuilder str = new StringBuilder(encryptedString);
                 textBox3.Text = encryptedString;
                 string inp = "Enter a sentence with following words appearing in the given ordered sequence: ";
-                for (int i = 0; i < encryptedString.Length; i++)
+                for (int i = 0, j = 0; i < encryptedString.Length; i++, j++)
                 {
-                    inp = inp + list[str[i].ToString()] + ", ";
+                    if (list.ContainsKey(str[i].ToString()))
+                    {
+                        inp = inp + list[str[i].ToString()] + ", ";
+                        chars.Add("C");
+                    }
+                    else
+                    {
+                        chars.Add(str[i].ToString());
+                    }                        
                 }
                 inp = inp.Substring(0, inp.Length - 2);
                 textBox5.Text = inp;
@@ -82,7 +94,33 @@ namespace TextConsole
                     if (reverselist.ContainsKey(arr[i]))
                         output = output + reverselist[arr[i]];                       
                 }
-                string decryptText = encdec.DecryptInput(output);
+                StringBuilder str = new StringBuilder(output);
+                string strToDecrypt = string.Empty;
+                for (int i = 0, j = 0; i < chars.Count; i++)
+                {
+                    if (chars[i] != "C") 
+                    {
+                        strToDecrypt = strToDecrypt + chars[i];                    
+                    }
+                    else
+                    {
+                        strToDecrypt = strToDecrypt + str[j].ToString();
+                        j++;
+                    }
+                }
+                string remainingString = string.Empty;
+
+                if (ConfigurationManager.AppSettings[strToDecrypt] != null)
+                {
+                    remainingString = ConfigurationManager.AppSettings[strToDecrypt.ToString()];
+                    Configuration configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                    configuration.AppSettings.Settings.Remove(strToDecrypt);
+                }
+                else
+                {
+                    remainingString = "";
+                }
+                string decryptText = encdec.DecryptInput(strToDecrypt+remainingString);
                 textBox4.Text = decryptText;
             }
             else
