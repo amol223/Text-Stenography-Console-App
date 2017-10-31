@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using EncryptDecrypt;
 using System.Configuration;
-using System.Data;
 using System.Data.OleDb;
 using System.IO;
 
@@ -49,7 +48,7 @@ namespace TextConsole
                 {
                     if (list.ContainsKey(str[i].ToString()))
                     {
-                        inp = inp + list[str[i].ToString()] + ", ";
+                        inp = inp + list[str[i].ToString()] + " ";
                         chars.Add("C");
                     }
                     else
@@ -57,7 +56,7 @@ namespace TextConsole
                         chars.Add(str[i].ToString());
                     }                        
                 }
-                inp = inp.Substring(0, inp.Length - 2);
+                //inp = inp.Substring(0, inp.Length - 2);
                 textBox5.Text = inp;
             }
             else
@@ -95,18 +94,18 @@ namespace TextConsole
                         output = output + reverselist[arr[i]];                       
                 }
                 StringBuilder str = new StringBuilder(output);
-                string strToDecrypt = string.Empty;
+                string strToDecrypt = output;
                 for (int i = 0, j = 0; i < chars.Count; i++)
                 {
                     if (chars[i] != "C") 
                     {
-                        strToDecrypt = strToDecrypt + chars[i];                    
+                        strToDecrypt = strToDecrypt.Substring(0, i) + chars[i] + strToDecrypt.Substring(i, strToDecrypt.Length - i);                    
                     }
-                    else
-                    {
-                        strToDecrypt = strToDecrypt + str[j].ToString();
-                        j++;
-                    }
+                    //else
+                    //{
+                    //    strToDecrypt = strToDecrypt + str[j].ToString();
+                    //    j++;
+                    //}
                 }
                 string remainingString = string.Empty;
 
