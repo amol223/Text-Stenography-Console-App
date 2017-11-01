@@ -32,12 +32,16 @@ namespace TextConsole
         EncryptDecryptClass encdec = new EncryptDecryptClass();
         Label l = new Label();
         List<string> chars = new List<string>();
+        List<string> validWords = new List<string>();
+
         private void button1_Click(object sender, EventArgs e)
         {
             textBox3.Text = "";
             textBox5.Text = "";
             l.Text = "";
             string input = textBox1.Text;
+            validWords.Clear();
+            chars.Clear();
             if (input != string.Empty)
             {
                 string encryptedString = encdec.EncryptInput(input);
@@ -48,6 +52,7 @@ namespace TextConsole
                 {
                     if (list.ContainsKey(str[i].ToString()))
                     {
+                        validWords.Add(list[str[i].ToString()]);
                         inp = inp + list[str[i].ToString()] + " ";
                         chars.Add("C");
                     }
@@ -85,7 +90,8 @@ namespace TextConsole
         {            
             string input = textBox2.Text;
             if (input != string.Empty)
-            { 
+            {
+                textBox4.Text = "";
                 string output = string.Empty;
                 string[] arr = input.Split(' ');             
                 for (int i = 0; i < arr.Length; i++)
@@ -95,7 +101,7 @@ namespace TextConsole
                 }
                 StringBuilder str = new StringBuilder(output);
                 string strToDecrypt = output;
-                for (int i = 0, j = 0; i < chars.Count; i++)
+                for (int i = 0; i < chars.Count; i++)
                 {
                     if (chars[i] != "C") 
                     {
@@ -135,7 +141,62 @@ namespace TextConsole
             textBox3.Text = string.Empty;
             textBox4.Text = string.Empty;            
             textBox5.Text = string.Empty;
-        }    
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            string input = textBox2.Text;
+            string checkValidity = string.Empty;
+            List<string> testRepetitions = new List<string>();
+            List<string> checkRepetitions = new List<string>();
+            List<string> localValidWords = validWords.ToList();            
+            if (input != string.Empty)
+            {
+                //localValidWords = validWords;
+                textBox4.Text = "";
+                string[] arr = input.Split(' ');
+                for (int i = 0; i < arr.Length; i++)
+                {
+                    if (reverselist.ContainsKey(arr[i])) {
+                        if (validWords.Contains(arr[i]))
+                        {
+                            if (localValidWords.Contains(arr[i]))
+                            {
+                                localValidWords.Remove(arr[i]);                                
+                            }
+                            else
+                            {
+                                if (!(checkRepetitions.Contains(arr[i])))
+                                    checkRepetitions.Add(arr[i]);
+                            }
+                        }
+                        else
+                        {
+                            checkValidity = checkValidity + arr[i] + ", ";
+                        }                        
+                    }
+                }                
+                if (checkValidity != string.Empty)
+                {
+                    checkValidity = checkValidity.Substring(0, checkValidity.Length - 2);
+                    textBox4.Text = "Warning: Replace following words in cover input: " + "\n" + checkValidity;
+                }
+                else if (checkRepetitions.Count != 0)
+                {
+                    textBox4.Text = "Warning: Remove multiple instances of following words in cover input: " + "\n" + 
+                                        string.Join(", ",checkRepetitions.ToArray());
+                }
+                else
+                {
+                    textBox4.Text = "Success";
+                }
+                
+            }
+            else
+            {
+                textBox4.Text = "Error: Please enter cover text input";
+            }
+        }        
     }
 }
 //The  advantage of  steganography  over  cryptography alone  is that  the intended secret  message does  not  attract attention  to itself as  an  object of scrutiny. Plainly  visible encrypted messages, no  matter  how unbreakable  they  are, arouse interest  and may  in  themselves  be incriminating in countries in which encryption is illegal. 
